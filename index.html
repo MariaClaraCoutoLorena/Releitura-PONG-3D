@@ -1,11 +1,11 @@
-<!DOCTYPE <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>PONG 3D</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
     <script src="formas.js" defer></script>
     <script  id="vertex-shader" type="notjs">
         precision mediump float;
@@ -69,26 +69,41 @@
 </head>
 <body>
   <div align="center"> 
-    <h1>PONG 3D</h1>
-    <div style="display:flex">
+    <h2 style="color: rgb(67, 5, 93); margin-bottom: 0;">PONG 3D</h2>
+    <div style="display:flex; justify-content: center; align-items: center;">
         <div>
             <h4>
-                Player 1
+                Jogador 1
             </h4>
             <p>
-                Press W to up and S to down
+                Controle: W e S
             </p>
         </div>
-        <div>
+        <div style="margin-left: 2rem;">
             <h4>
-                Player 2
+                Jogador 2
             </h4>
             <p>
-                Press O to up and L to down
+                Controle: ↑ e ↓
             </p>
         </div>
     </div>
+    <div style="display:flex; justify-content: center; align-items: center; background-color:  rgb(67, 5, 93); width: 150px;height: 40px; border-radius: 1rem;">
+            <h4>
+                <span id="p1">0</span> x
+            </h4>
+            <h4 style="margin-left: 10px;">
+                <span id="p2">0</span>
+            </h4>
+    </div>
+
+
     <p><canvas id="canvas" width="500" height="500"></canvas></p>
+
+    <button id="reload" style="background-color:  rgb(67, 5, 93); width: 150px;height: 40px; border-radius: 1rem;">
+        Reiniciar Jogo
+    </button>
+
   </div>
 </body>
 </html>

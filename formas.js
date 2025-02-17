@@ -1,6 +1,8 @@
 
 function formas() {
-    
+    var pontuacao_1 = 0;
+    var pontuacao_2 = 0;
+
     const canvas = document.querySelector("#canvas");
     const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true });
 
@@ -70,47 +72,76 @@ function formas() {
 
     const bodyElement = document.querySelector("body");
     bodyElement.addEventListener("keydown", keyDown, false);
-
-    let rotateX = 0;
-    let rotateY = 0;
-    let rotateZ = 0;
-    function keyDown(event) {
-        // switch (event.key) {
-        //     case "1":
-        //         rotateX = 1;
-        //         rotateY = 0;
-        //         rotateZ = 0;
-        //         break;
-        //     case "2":
-        //         rotateX = 0;
-        //         rotateY = 1;
-        //         rotateZ = 0;
-        //         break;
-        //     case "3":
-        //         rotateX = 0;
-        //         rotateY = 0;
-        //         rotateZ = 1;
-        //         break;
-        //     case "4":
-        //         rotateX = 0;
-        //         rotateY = 0;
-        //         rotateZ = 1;
-        //         break;
-        // }
-        return
-    }
+    bodyElement.addEventListener("keyup", keyUp, false);
+    document.querySelector("#reload").addEventListener("click", reload);
 
     let thetaX = 0.0;
     let thetaY = 0.0;
     let thetaZ = 0.0;
     let ty_player1 = 0.01;
     let ty_player2 = -0.01;
-    let tx_ball=0;
-    let ty_ball=0
-    let vel_p1 = 0.03;
-    let p1 = 1;
+    let tx_ball= 0;
+    let ty_ball= 0;
+    let vel = 0.1;
+    let p1 = 0;
+    let p2 = 0;
+    let wait = 200;
+    let pass = 0;
+    //anguçp maior do que 45 graus
+    let ballX = Math.random() * 2 -1
+    while ( Math.abs(ballX) < 0.5) {
+        ballX = Math.random() * 2 -1
+    } 
+    let ballY = Math.random() * (Math.abs(ballX) * 2) -Math.abs(ballX) 
+    let vel_ball = 0.06/((Math.abs(ballX)+Math.abs(ballY))**(0.8))
+    console.log(ballX, ballY)
 
-    let pong_ball_color = [0,0,0];
+    function keyDown(event) {
+        console.log(event, event.key)
+        switch (event.key) {
+            case "w":
+                p1 = 1;
+                break;
+            case "s":
+                p1 = -1
+                break;
+            case "ArrowUp":
+                p2 = 1;
+                break;
+            case "ArrowDown":
+                p2 = -1;
+                break;
+        }
+    }
+
+    function keyUp(event) {
+        console.log(event, event.key)
+        switch (event.key) {
+            case "w":
+                p1 = 0;
+                break;
+            case "s":
+                p1 = 0;
+                break;
+            case "ArrowUp":
+                p2 = 0;
+                break;
+            case "ArrowDown":
+                p2 = 0;
+                break;
+        }
+    }
+
+    function reload(){
+        pontuacao_1 = 0;
+        pontuacao_2 = 0;
+        ty_player1 = 0;
+        ty_player2 = 0;
+        wait = 1000;
+        document.getElementById("p2").innerHTML = pontuacao_2;
+        document.getElementById("p1").innerHTML = pontuacao_1;
+        pass = 0;
+    }
 
     function drawElements() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -120,8 +151,13 @@ function formas() {
         thetaX += Math.PI / 4;
 
         //p1
-        ty_player1 += vel_p1 * p1
-        let color = [0,0,0];
+        if((ty_player1 > 2.25) && p1 == 1) {
+            p1 = 0;
+        } else if((ty_player1 < -2.25) && p1 == -1){
+            p1 = 0;
+        }
+        ty_player1 += vel * p1
+        let color = [0.82,0.609,0.96];
         gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
         gl.uniform3fv(diffuseReflectionLocation, new Float32Array(color));
         gl.uniform3fv(specularReflectionLocation, new Float32Array([1.0, 1.0, 1.0]));
@@ -132,9 +168,8 @@ function formas() {
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
         let modelMatrix = m4.identity();
-        modelMatrix = m4.translate(modelMatrix, -2.7, ty_player1, 0.0);
-        modelMatrix = m4.scale(modelMatrix, 0.2, 1, 0.1);
-        // modelMatrix = m4.xRotate(modelMatrix, degToRad(thetaX));
+        modelMatrix = m4.translate(modelMatrix, -2.8, ty_player1, 0.0);
+        modelMatrix = m4.scale(modelMatrix, 0.1, 1.5, 0.1);
         gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
         var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
         gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
@@ -142,8 +177,13 @@ function formas() {
 
 
         //p2
-        ty_player2 += vel_p1 * -1
-        color = [0,0,0];
+        if((ty_player2 > 2.25) && p2 == 1) {
+            p2 = 0;
+        } else if((ty_player2 < -2.25) && p2 == -1){
+            p2 = 0;
+        }
+        ty_player2 += vel * p2
+        color =  [0.82,0.609,0.96];
         gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
         gl.uniform3fv(diffuseReflectionLocation, new Float32Array(color));
         gl.uniform3fv(specularReflectionLocation, new Float32Array([1.0, 1.0, 1.0]));
@@ -154,8 +194,8 @@ function formas() {
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
         modelMatrix = m4.identity();
-        modelMatrix = m4.translate(modelMatrix, +2.7, ty_player2, 0.0);
-        modelMatrix = m4.scale(modelMatrix, 0.2, 1, 0.1);
+        modelMatrix = m4.translate(modelMatrix, +2.8, ty_player2, 0.0);
+        modelMatrix = m4.scale(modelMatrix, 0.1, 1.5, 0.1);
         gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
         var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
         gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
@@ -163,8 +203,39 @@ function formas() {
 
 
         //pong_ball
-        tx_ball += 0.01
-        ty_ball += 0.01
+        if(tx_ball==0){
+            var start = new Date().getTime();
+            var end = start;
+            while(end < start + wait) {
+                end = new Date().getTime();
+            }
+            wait = 200;
+        }
+        if(tx_ball>3 || tx_ball<-3){
+            if(tx_ball>3){
+                pontuacao_1 +=1;
+                document.getElementById("p1").innerHTML = pontuacao_1;
+            } else { 
+                pontuacao_2 += 1; 
+                document.getElementById("p2").innerHTML = pontuacao_2;
+            }
+            tx_ball = 0
+            ty_ball = 0
+            ballX = Math.random() * 2 -1
+            while ( Math.abs(ballX) < 0.4) {
+                ballX = Math.random() * 2 -1
+            }
+            ballY = Math.random() * (Math.abs(ballX) * 2) -Math.abs(ballX) 
+            vel_ball = 0.06/((Math.abs(ballX)+Math.abs(ballY))**(0.8))
+        } else{
+            tx_ball += ballX * vel_ball;
+            ty_ball += ballY * vel_ball;
+        }
+        if(pass == 0){
+            tx_ball = 0;
+            ty_ball = 0;
+        }
+        pass = 1;
         color = [0.5,0.3,1];
         gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
         gl.uniform3fv(diffuseReflectionLocation, new Float32Array(color));
@@ -185,65 +256,11 @@ function formas() {
         var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
         gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
         gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
-        
         requestAnimationFrame(drawElements);
     }
 
     drawElements();
     
-}
-
-function esfera(raio, latitude, longitude){
-    var positions = [];
-    var normals = [];
-    for (let lat = 0; lat <= latitude; lat++) {
-        let theta = lat * Math.PI / latitude;
-        let senTheta = Math.sin(theta);
-        let cosTheta = Math.cos(theta);
-
-        for (let long = 0; long <= longitude; long++) {
-            let phi = long * 2 * Math.PI / longitude;
-            let senPhi = Math.sin(phi);
-            let cosPhi = Math.cos(phi);
-
-            let x = cosPhi * senTheta;
-            let y = cosTheta;
-            let z = senPhi * senTheta;
-
-            positions.push(raio * x, raio * y, raio * z);
-            normals.push(x, y, z);
-        } 
-    }
-
-    let indices = [];
-    for (let lat = 0; lat < latitude; lat++) {
-        for (let long = 0; long < longitude; long++) {
-            let first = (lat * (longitude + 1)) + long;
-            let second = first + longitude + 1;
-            indices.push(first, second, first + 1);
-            indices.push(second, second + 1, first + 1);
-        }
-    }
-
-    return {
-        positions: new Float32Array(positions),
-        normals: new Float32Array(normals),
-        indices: new Uint16Array(indices),
-    };
-
-}
-
-function generateColorSet(color) {
-    let colorData = [];
-    for (let i = 0; i < 25; i++) {
-        colorData.push(...[color[0], color[1], color[2]]);
-    }
-    return colorData;
-}
-
-function setColor(n, colorData) {
-    let color = [colorData[n * 3], colorData[n * 3 + 1], colorData[n * 3 + 2]];
-    return color;
 }
 
 function set3dViewingMatrix(P0, P_ref, V) {
