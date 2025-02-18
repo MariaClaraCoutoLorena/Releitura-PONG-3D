@@ -1,7 +1,7 @@
 function formas() {
   var pontuacao_1 = 0;
   var pontuacao_2 = 0;
-
+  var coelho_trapalhao = 0;
   const canvas = document.querySelector("#canvas");
   const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true });
 
@@ -73,6 +73,7 @@ function formas() {
   bodyElement.addEventListener("keydown", keyDown, false);
   bodyElement.addEventListener("keyup", keyUp, false);
   document.querySelector("#reload").addEventListener("click", reload);
+  document.querySelector("#coelho").addEventListener("click", coelho);
 
   const CAMERA_HEIGHT_MIN = 1.0;  // Altura mínima da câmera
   const CAMERA_HEIGHT_MAX = 5.0;  // Altura máxima da câmera
@@ -88,7 +89,11 @@ function formas() {
   let ty_player2 = -0.01;
   let tx_ball= 0;
   let ty_ball= 0;
+  let tx_co = -3;
+  let ty_co = -3;
   let vel = 0.1;
+  let vel_co = Math.random()*0.2;
+  let vel_co_y = Math.random()*0.2;
   let p1 = 0;
   let p2 = 0;
   let wait = 200;
@@ -172,7 +177,19 @@ function formas() {
       document.getElementById("p2").innerHTML = pontuacao_2;
       document.getElementById("p1").innerHTML = pontuacao_1;
       pass = 0;
+      coelho_trapalhao = 0
+      document.getElementById("coelho").style.backgroundColor = 'rgb(220, 139, 255)';
   }
+
+  function coelho(){
+    coelho_trapalhao = !coelho_trapalhao
+    if (coelho_trapalhao){
+        document.getElementById("coelho").style.backgroundColor = 'rgb(101, 55, 121)';
+    } else {
+        document.getElementById("coelho").style.backgroundColor = 'rgb(220, 139, 255)';
+    }
+  }
+
 
   function drawElements() {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -296,7 +313,7 @@ function formas() {
       }
       pass = 1;
       color = [0.5,0.3,1];
-      gl.uniform3fv(ambientReflectionLocation, new Float32Array([1.0, 0.8, 1.0 ]));
+      gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
       gl.uniform3fv(diffuseReflectionLocation, new Float32Array([0.7, 0.7, 0.7])); 
       gl.uniform3fv(specularReflectionLocation, new Float32Array([0.9, 0.9, 0.9]))
       gl.uniform1f(shininessLocation, 200.0); // Valor mais moderado
@@ -320,6 +337,90 @@ function formas() {
       var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
       gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
       gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
+
+
+
+      //coelho
+      if(coelho_trapalhao){
+        if(tx_co>5){
+            vel_co = -Math.random()*0.2
+        } else if (tx_co<-4.5)(
+            vel_co = Math.random()*0.2
+        )
+
+        if(ty_co>5){
+            vel_co_y = -Math.random()*0.2
+        } else if (ty_co<-4.5)(
+            vel_co_y = Math.random()*0.2
+        )
+
+        tx_co += vel_co
+        ty_co += vel_co_y
+        color = [1,1,1];
+        gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
+        gl.uniform3fv(diffuseReflectionLocation, new Float32Array(color)); 
+        gl.uniform3fv(specularReflectionLocation, new Float32Array([0.9, 0.9, 0.9]))
+        vertexData = setSuperConicSphereVertices(1, 15, 10, 1, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
+        normalData = setSuperConicSphereNormals_flat(1.0, 15, 10, 1, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+        modelMatrix = m4.identity();
+        modelMatrix = m4.translate(modelMatrix, tx_co -0.2, ty_co-0.3, 0.0);
+        modelMatrix = m4.scale(modelMatrix, 0.4, 0.3, 0.05);
+        gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
+        var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
+        gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
+        gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
+        
+        
+        //orelhas
+        vertexData = setSuperConicSphereVertices(1, 20, 20, 1, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
+        normalData = setSuperConicSphereNormals_flat(1.0, 20, 20, 1, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+        modelMatrix = m4.identity();
+        modelMatrix = m4.translate(modelMatrix, tx_co-0.1, ty_co+0.3, 0.0);
+        modelMatrix = m4.scale(modelMatrix, 0.08, 0.2, 0.05);
+        gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
+        var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
+        gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
+        gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+        modelMatrix = m4.identity();
+        modelMatrix = m4.translate(modelMatrix, tx_co+0.1, ty_co+0.3, 0.0);
+        modelMatrix = m4.scale(modelMatrix, 0.08, 0.2, 0.05);
+        gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
+        var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
+        gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
+        gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
+
+        vertexData = setSuperConicSphereVertices(1, 20, 20, 1, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
+        normalData = setSuperConicSphereNormals_flat(1.0, 20, 20, 1, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+        modelMatrix = m4.identity();
+        modelMatrix = m4.translate(modelMatrix, tx_co, ty_co, 0.0);
+        modelMatrix = m4.scale(modelMatrix, 0.2, 0.2, 0.05);
+        gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
+        var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
+        gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
+        gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
+
+      }
+      else {
+        tx_co = -3
+        ty_co = -3
+      }
+      
       requestAnimationFrame(drawElements);
   }
 
@@ -482,19 +583,6 @@ function setSuperConicSphereNormals_flat(radius, slices, stacks, s1, s2) {
   }
 
   return normalData;
-}
-
-function generateColorSet() {
-  let colorData = [];
-  for (let i = 0; i < 25; i++) {
-      colorData.push(...[Math.random(), Math.random(), Math.random()]);
-  }
-  return colorData;
-}
-
-function setColor(n, colorData) {
-  let color = [colorData[n * 3], colorData[n * 3 + 1], colorData[n * 3 + 2]];
-  return color;
 }
 
 function set3dViewingMatrix(P0, P_ref, V) {

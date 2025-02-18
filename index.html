@@ -69,56 +69,72 @@
 </head>
 <body>
   <div align="center"> 
-    <h2 style="color: rgb(67, 5, 93); margin-bottom: 0;">PONG 3D</h2>
-    <div style="display:flex; justify-content: center; align-items: center;">
-        <div>
-            <h4>
-                Jogador 1
-            </h4>
-            <p>
-                Controle: W e S
-            </p>
+    <h1 style="color: rgb(67, 5, 93); margin: 1px 0 0 0; font-weight: bolder;">PONG 3D</h1>
+    
+    <div style="display:flex; justify-content: center; align-items: center; border:5px solid rgb(205, 88, 244); border-radius: 1rem; width: 700px;">
+        
+        <div style="width:200px;">
+            <h3>Controles dos Jogadores</h3>
+            <div style="display:flex; justify-content: center; align-items: center;">
+                <div>
+                    <h4>
+                        Jogador 1
+                    </h4>
+                    <p>
+                        W e S
+                    </p>
+                </div>
+                <div style="margin: 0 0 0 10px;">
+                    <h4>
+                        Jogador 2
+                    </h4>
+                    <p>
+                        ↑ e ↓
+                    </p>
+                </div>
+            </div>
         </div>
-        <div style="margin-left: 2rem;">
-            <h4>
-                Jogador 2
-            </h4>
-            <p>
-                Controle: ↑ e ↓
-            </p>
-        </div>
-    </div>
-    <div style="display:flex; justify-content: center; align-items: center; color: rgb(237, 193, 254); background-color:  rgb(101, 55, 121); width: 150px;height: 40px; border-radius: 1rem;">
-            <h4>
-                <span id="p1">0</span> x
-            </h4>
-            <h4 style="margin-left: 10px;">
-                <span id="p2">0</span>
-            </h4>
-    </div>
 
-    <div style="display:flex; justify-content: center; align-items: center;">
-    <div>
-        <h4>
-            Controles da Câmera
-        </h4>
-        <p>
-            a - rotação antihorária<br>
-            h - rotação horária<br>
-            c - aproximar a câmera<br>
-            f - afastar a câmera<br>
-            u - subir a câmera<br>
-            d - abaixar a câmera<br>
-        </p>
-    </div>
+        <div style="margin: 0 10px 0 10px; width:200px;">
+            <h3>Placar</h3>
+            <div style="display:flex; justify-content: center; align-items: center; color: rgb(237, 193, 254); background-color:  rgb(101, 55, 121); width: 150px;height: 40px; border-radius: 1rem;">
+                <h4>
+                    <span id="p1">0</span> x
+                </h4>
+                <h4 style="margin-left: 10px;">
+                    <span id="p2">0</span>
+                </h4>
+            </div>
+            <button id="reload" style="background-color:  rgb(101, 55, 121); color: rgb(237, 193, 254); width: 150px;height: 40px; border-radius: 1rem; margin-top: 10px; border: 0;">
+                Reiniciar Jogo
+            </button>
+            <button id="coelho" style="background-color:  rgb(220, 139, 255); color: rgb(237, 193, 254); width: 150px;height: 40px; margin-bottom: 4px; border-radius: 1rem; margin-top: 10px; border: 0;">
+                Coelho Trapalhão
+            </button>
+        </div>
+       
+       
+        <div>
+            <h3 style="margin-bottom: 0.2rem;">Controles da Câmera</h3>
+            <p style="margin:0; font-size: 12px;">Novas formas de jogar!</p>
+            <div style="display:flex; justify-content: center; align-items: center;">
+                <div>
+                    <p>
+                        a: rotação antihorária<br>
+                        h: rotação horária<br>
+                        c: aproximar a câmera<br>
+                        f: afastar a câmera<br>
+                        u: subir a câmera<br>
+                        d: abaixar a câmera<br>
+                    </p>
+                </div>        
+        </div>
+      </div>
+    
 </div>
 
 
-    <p><canvas id="canvas" width="500" height="500"></canvas></p>
-
-    <button id="reload" style="background-color:  rgb(101, 55, 121); color: rgb(237, 193, 254); width: 150px;height: 40px; border-radius: 1rem;">
-        Reiniciar Jogo
-    </button>
+    <p style="margin: 5px 0 0 0"><canvas id="canvas" width="500" height="500"></canvas></p>
 
   </div>
 </body>
