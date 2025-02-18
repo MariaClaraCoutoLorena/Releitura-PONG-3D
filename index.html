@@ -6,7 +6,7 @@
     <title>PONG 3D</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
-    <script src="formas.js" defer></script>
+    <script src="pong.js" defer></script>
     <script  id="vertex-shader" type="notjs">
         precision mediump float;
 
@@ -88,7 +88,7 @@
             </p>
         </div>
     </div>
-    <div style="display:flex; justify-content: center; align-items: center; background-color:  rgb(67, 5, 93); width: 150px;height: 40px; border-radius: 1rem;">
+    <div style="display:flex; justify-content: center; align-items: center; color: rgb(237, 193, 254); background-color:  rgb(101, 55, 121); width: 150px;height: 40px; border-radius: 1rem;">
             <h4>
                 <span id="p1">0</span> x
             </h4>
@@ -97,10 +97,26 @@
             </h4>
     </div>
 
+    <div style="display:flex; justify-content: center; align-items: center;">
+    <div>
+        <h4>
+            Controles da Câmera
+        </h4>
+        <p>
+            a - rotação antihorária<br>
+            h - rotação horária<br>
+            c - aproximar a câmera<br>
+            f - afastar a câmera<br>
+            u - subir a câmera<br>
+            d - abaixar a câmera<br>
+        </p>
+    </div>
+</div>
+
 
     <p><canvas id="canvas" width="500" height="500"></canvas></p>
 
-    <button id="reload" style="background-color:  rgb(67, 5, 93); width: 150px;height: 40px; border-radius: 1rem;">
+    <button id="reload" style="background-color:  rgb(101, 55, 121); color: rgb(237, 193, 254); width: 150px;height: 40px; border-radius: 1rem;">
         Reiniciar Jogo
     </button>
 
