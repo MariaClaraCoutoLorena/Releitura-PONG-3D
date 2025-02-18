@@ -44,7 +44,7 @@ function formas() {
   gl.uniform3fv(lightPositionLocation, new Float32Array([0.0, 0.0, 2.0]));
   gl.uniform1f(shininessLocation, 250.0);
 
-  gl.clearColor(0.8, 0.8, 0.8, 1.0);
+  gl.clearColor(0.6, 0.6, 0.6, 1.0);
   gl.viewport(0, 0, 500, 500);
 
   
@@ -138,7 +138,7 @@ function formas() {
       pontuacao_2 = 0;
       ty_player1 = 0;
       ty_player2 = 0;
-      wait = 1000;
+      wait = 500;
       document.getElementById("p2").innerHTML = pontuacao_2;
       document.getElementById("p1").innerHTML = pontuacao_1;
       pass = 0;
@@ -152,9 +152,9 @@ function formas() {
       thetaX += Math.PI / 4;
 
       //p1
-      if((ty_player1 > 2.25) && p1 == 1) {
+      if((ty_player1 > 2) && p1 == 1) {
           p1 = 0;
-      } else if((ty_player1 < -2.25) && p1 == -1){
+      } else if((ty_player1 < -2.1) && p1 == -1){
           p1 = 0;
       }
       ty_player1 += vel * p1
@@ -169,8 +169,8 @@ function formas() {
       gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
       let modelMatrix = m4.identity();
-      modelMatrix = m4.translate(modelMatrix, -2.8, ty_player1, 0.0);
-      modelMatrix = m4.scale(modelMatrix, 0.1, 1.5, 0.1);
+      modelMatrix = m4.translate(modelMatrix, -2.85, ty_player1, 0.0);
+      modelMatrix = m4.scale(modelMatrix, 0.1, 1.2, 0.1);
       gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
       var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
       gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
@@ -178,9 +178,9 @@ function formas() {
 
 
       //p2
-      if((ty_player2 > 2.25) && p2 == 1) {
+      if((ty_player2 > 2) && p2 == 1) {
           p2 = 0;
-      } else if((ty_player2 < -2.25) && p2 == -1){
+      } else if((ty_player2 < -2.1) && p2 == -1){
           p2 = 0;
       }
       ty_player2 += vel * p2
@@ -195,8 +195,8 @@ function formas() {
       gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
       modelMatrix = m4.identity();
-      modelMatrix = m4.translate(modelMatrix, +2.8, ty_player2, 0.0);
-      modelMatrix = m4.scale(modelMatrix, 0.1, 1.5, 0.1);
+      modelMatrix = m4.translate(modelMatrix, +2.85, ty_player2, 0.0);
+      modelMatrix = m4.scale(modelMatrix, 0.1, 1.2, 0.1);
       gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelMatrix);
       var inverseTransposeModelMatrix = m4.transpose(m4.inverse(modelMatrix));
       gl.uniformMatrix4fv(inverseTransposeModelMatrixUniformLocation, false, inverseTransposeModelMatrix);
@@ -212,8 +212,8 @@ function formas() {
           }
           wait = 200;
       }
-      if(tx_ball>3 || tx_ball<-3){
-          if(tx_ball>3){
+      if(tx_ball>3.5 || tx_ball<-3.5){
+          if(tx_ball>3.5){
               pontuacao_1 +=1;
               document.getElementById("p1").innerHTML = pontuacao_1;
           } else { 
@@ -230,7 +230,7 @@ function formas() {
           vel_ball = 0.06/((Math.abs(ballX)+Math.abs(ballY))**(0.8))
       } else{
           if (tx_ball <= -2.5) {
-            if (ty_ball >= ty_player1 - 1.5 && ty_ball <= ty_player1 + 1.5) {
+            if (ty_ball >= ty_player1 - 1.1 && ty_ball <= ty_player1 + 1.1) {
               ballX = Math.abs(ballX)            
             
               vel_ball *= 1.05;
@@ -238,14 +238,14 @@ function formas() {
           }
     
           if (tx_ball >= 2.5) {
-            if (ty_ball >= ty_player2 - 1.5 && ty_ball <= ty_player2 + 1.5) {
+            if (ty_ball >= ty_player2 - 1.1 && ty_ball <= ty_player2 + 1.1) {
               ballX = -Math.abs(ballX);
 
               vel_ball *= 1.05;
             }
           }
 
-          if (ty_ball > 2.9 || ty_ball < -2.9) {
+          if (ty_ball > 2.8 || ty_ball < -2.8) {
             ballY = -ballY;
           }
           tx_ball += ballX * vel_ball;
@@ -257,18 +257,23 @@ function formas() {
       }
       pass = 1;
       color = [0.5,0.3,1];
-      gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
-      gl.uniform3fv(diffuseReflectionLocation, new Float32Array(color));
-      gl.uniform3fv(specularReflectionLocation, new Float32Array([1.0, 1.0, 1.0]));
-      vertexData = setSuperConicSphereVertices(1.0, 30, 30, 1, 1);
+      gl.uniform3fv(ambientReflectionLocation, new Float32Array([1.0, 0.8, 1.0 ]));
+      gl.uniform3fv(diffuseReflectionLocation, new Float32Array([0.7, 0.7, 0.7])); 
+      gl.uniform3fv(specularReflectionLocation, new Float32Array([0.9, 0.9, 0.9]));
+      gl.uniform1f(shininessLocation, 200.0);
+
+      // Adicionar uma fonte de luz móvel que segue a bola
+      gl.uniform3fv(lightPositionLocation, new Float32Array([tx_ball, ty_ball, 1.0]));
+      
+      vertexData = setSuperConicSphereVertices(1, 50, 50, 1, 1);
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
-      normalData = setSuperConicSphereNormals_flat(1.0, 30, 30, 1, 1);
+      normalData = setSuperConicSphereNormals_flat(1.0, 50, 50, 1, 1);
       gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
       modelMatrix = m4.identity();
       modelMatrix = m4.translate(modelMatrix, tx_ball, ty_ball, 0.0);
-      modelMatrix = m4.scale(modelMatrix, 0.2, 0.2, 0.2);
+      modelMatrix = m4.scale(modelMatrix, 0.2, 0.2, 0.05);
       modelMatrix = m4.xRotate(modelMatrix, degToRad(thetaX));
       modelMatrix = m4.yRotate(modelMatrix, degToRad(thetaY));
       modelMatrix = m4.zRotate(modelMatrix, degToRad(thetaZ));
