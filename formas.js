@@ -51,9 +51,9 @@ function formas() {
   let vertexData = [];
 
 
-  P0 = [0.0, 0.0, 3.0];
+  P0 = [0.0, 0.0, 5.0];
   P_ref = [0.0, 0.0, 0.0];
-  V = [0.0, 1.0, 0.0];
+  V = [0.0, 3.0, 0.0];
   let viewingMatrix = set3dViewingMatrix(P0, P_ref, V);
   xw_min = -1.0;
   xw_max = 1.0;
@@ -74,14 +74,19 @@ function formas() {
   bodyElement.addEventListener("keyup", keyUp, false);
   document.querySelector("#reload").addEventListener("click", reload);
 
+  const CAMERA_HEIGHT_MIN = 1.0;  // Altura mínima da câmera
+  const CAMERA_HEIGHT_MAX = 5.0;  // Altura máxima da câmera
+  const CAMERA_RADIUS_MIN = 3.0;  // Distância mínima da câmera ao centro
+  const CAMERA_RADIUS_MAX = 8.0;  // Distância máxima da câmera ao centro
+  let camera_ang = 0;
+  let camera_raio = 4.0;
+  let camera_alt = 0.0; 
   let thetaX = 0.0;
   let thetaY = 0.0;
   let thetaZ = 0.0;
   let ty_player1 = 0.01;
   let ty_player2 = -0.01;
   let tx_ball= 0;
-  let x_step = 0.1;
-  let y_step = 0.1;
   let ty_ball= 0;
   let vel = 0.1;
   let p1 = 0;
@@ -112,6 +117,24 @@ function formas() {
           case "ArrowDown":
               p2 = -1;
               break;
+          case "a":
+              camera_ang -= 0.1;
+              break;
+          case "h":
+              camera_ang += 0.1;
+              break;
+          case "u": // Subir câmera
+              camera_alt = Math.min(CAMERA_HEIGHT_MAX, camera_alt + 0.1);
+              break;
+          case "d": // Descer câmera
+              camera_alt = Math.max(CAMERA_HEIGHT_MIN, camera_alt - 0.1);
+              break;
+          case "c": // Aproximar câmera
+              camera_raio = Math.max(CAMERA_RADIUS_MIN, camera_raio - 0.1);
+              break;
+          case "f": // Afastar câmera
+              camera_raio = Math.min(CAMERA_RADIUS_MAX, camera_raio + 0.1);
+              break;        
       }
   }
 
@@ -130,6 +153,10 @@ function formas() {
           case "ArrowDown":
               p2 = 0;
               break;
+          case "a":
+                break;
+          case  "h":
+                break;
       }
   }
 
@@ -138,6 +165,9 @@ function formas() {
       pontuacao_2 = 0;
       ty_player1 = 0;
       ty_player2 = 0;
+      camera_ang = 0;
+      camera_alt = 0.0
+      camera_raio = 4.0;
       wait = 500;
       document.getElementById("p2").innerHTML = pontuacao_2;
       document.getElementById("p1").innerHTML = pontuacao_1;
@@ -150,6 +180,15 @@ function formas() {
       thetaZ += Math.PI / 4;
       thetaY += Math.PI / 4;
       thetaX += Math.PI / 4;
+
+      P0 = [Math.sin(camera_ang) * camera_raio, camera_alt, Math.cos(camera_ang) * camera_raio];
+      
+      P_ref = [0.0, 0.0, 0.0]; // Mantém o foco no centro
+      V = [0.0, 1.0, 0.0];
+    
+      viewingMatrix = set3dViewingMatrix(P0, P_ref, V);
+      gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewingMatrix);
+      gl.uniform3fv(viewPositionLocation, new Float32Array(P0));
 
       //p1
       if((ty_player1 > 2) && p1 == 1) {
@@ -259,8 +298,8 @@ function formas() {
       color = [0.5,0.3,1];
       gl.uniform3fv(ambientReflectionLocation, new Float32Array([1.0, 0.8, 1.0 ]));
       gl.uniform3fv(diffuseReflectionLocation, new Float32Array([0.7, 0.7, 0.7])); 
-      gl.uniform3fv(specularReflectionLocation, new Float32Array([0.9, 0.9, 0.9]));
-      gl.uniform1f(shininessLocation, 200.0);
+      gl.uniform3fv(specularReflectionLocation, new Float32Array([0.9, 0.9, 0.9]))
+      gl.uniform1f(shininessLocation, 200.0); // Valor mais moderado
 
       // Adicionar uma fonte de luz móvel que segue a bola
       gl.uniform3fv(lightPositionLocation, new Float32Array([tx_ball, ty_ball, 1.0]));
