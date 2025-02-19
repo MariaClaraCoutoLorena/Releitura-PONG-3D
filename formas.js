@@ -82,10 +82,10 @@ function formas() {
     document.querySelector("#reload").addEventListener("click", reload);
     document.querySelector("#coelho").addEventListener("click", coelho);
   
-    const CAMERA_HEIGHT_MIN = 1.0;  // Altura mínima da câmera
-    const CAMERA_HEIGHT_MAX = 5.0;  // Altura máxima da câmera
-    const CAMERA_RADIUS_MIN = 3.0;  // Distância mínima da câmera ao centro
-    const CAMERA_RADIUS_MAX = 8.0;  // Distância máxima da câmera ao centro
+    const CAMERA_HEIGHT_MIN = 1.0; 
+    const CAMERA_HEIGHT_MAX = 5.0;
+    const CAMERA_RADIUS_MIN = 3.0; 
+    const CAMERA_RADIUS_MAX = 8.0;
     let camera_ang = 0;
     let camera_raio = 4.0;
     let camera_alt = 0.0; 
@@ -143,16 +143,16 @@ function formas() {
             case "h":
                 camera_ang += 0.1;
                 break;
-            case "u": // Subir câmera
+            case "u":
                 camera_alt = Math.min(CAMERA_HEIGHT_MAX, camera_alt + 0.1);
                 break;
-            case "d": // Descer câmera
+            case "d":
                 camera_alt = Math.max(CAMERA_HEIGHT_MIN, camera_alt - 0.1);
                 break;
-            case "c": // Aproximar câmera
+            case "c":
                 camera_raio = Math.max(CAMERA_RADIUS_MIN, camera_raio - 0.1);
                 break;
-            case "f": // Afastar câmera
+            case "f":
                 camera_raio = Math.min(CAMERA_RADIUS_MAX, camera_raio + 0.1);
                 break;        
         }
@@ -215,14 +215,14 @@ function formas() {
   
         P0 = [Math.sin(camera_ang) * camera_raio, camera_alt, Math.cos(camera_ang) * camera_raio];
         
-        P_ref = [0.0, 0.0, 0.0]; // Mantém o foco no centro
+        P_ref = [0.0, 0.0, 0.0];
         V = [0.0, 1.0, 0.0];
       
         viewingMatrix = set3dViewingMatrix(P0, P_ref, V);
         gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewingMatrix);
         gl.uniform3fv(viewPositionLocation, new Float32Array(P0));
   
-        //p1
+        //p1 - barra esquerda
         if((ty_player1 > 2) && p1 == 1) {
             p1 = 0;
         } else if((ty_player1 < -2.1) && p1 == -1){
@@ -248,7 +248,7 @@ function formas() {
         gl.drawArrays(gl.TRIANGLES, 0, vertexData.length / 3);
   
   
-        //p2
+        //p2 - barra direita
         if((ty_player2 > 2) && p2 == 1) {
             p2 = 0;
         } else if((ty_player2 < -2.1) && p2 == -1){
@@ -331,9 +331,8 @@ function formas() {
         gl.uniform3fv(ambientReflectionLocation, new Float32Array(color));
         gl.uniform3fv(diffuseReflectionLocation, new Float32Array([0.7, 0.7, 0.7])); 
         gl.uniform3fv(specularReflectionLocation, new Float32Array([0.9, 0.9, 0.9]))
-        gl.uniform1f(shininessLocation, 200.0); // Valor mais moderado
-  
-        // Adicionar uma fonte de luz móvel que segue a bola
+        gl.uniform1f(shininessLocation, 200.0);
+        //fonte de luz móvel
         gl.uniform3fv(lightPositionLocation, new Float32Array([tx_ball, ty_ball, 1.0]));
         
         vertexData = setSuperConicSphereVertices(1, 50, 50, 1, 1);
